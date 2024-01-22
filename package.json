@@ -2,7 +2,7 @@
   "name": "react-complete-guide",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://127.0.0.1:8000",
+  "proxy": "https://genie-bazaar-backend.vercel.app",
   "dependencies": {
     "@mui/icons-material": "^5.15.1",
     "@mui/material": "^5.15.1",
