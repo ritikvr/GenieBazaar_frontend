@@ -59,9 +59,13 @@ const Payment = () => {
           "Content-Type": "application/json",
         },
       };
+      if (!localStorage.getItem("token")) {
+        throw new Error("UnAuthorised");
+      }
+      const token = localStorage.getItem("token");
       const { data } = await axios.post(
         "/api/v1/process/payment",
-        paymentData,
+        { paymentData, token },
         config
       );
       const client_secret = data.client_secret;

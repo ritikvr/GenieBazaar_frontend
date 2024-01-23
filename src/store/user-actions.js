@@ -22,6 +22,7 @@ export const loginUser = (email, password) => {
         { email, password },
         config
       );
+      localStorage.setItem("token", data.token);
       dispatch(
         userActions.userReducer({
           loading: false,
@@ -58,6 +59,7 @@ export const registerUser = (userData) => {
         },
       };
       const { data } = await axios.post("/api/v1/register", userData, config);
+      localStorage.setItem("token", data.token);
       dispatch(
         userActions.userReducer({
           loading: false,
@@ -89,7 +91,16 @@ export const loadUser = () => {
           user: {},
         })
       );
-      const { data } = await axios.get("/api/v1/me");
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      if (!localStorage.getItem("token")) {
+        throw new Error("UnAuthorised");
+      }
+      const token = localStorage.getItem("token");
+      const { data } = await axios.post("/api/v1/me", { token }, config);
       if (!data) {
         throw new Error("logged out");
       }
@@ -108,7 +119,7 @@ export const loadUser = () => {
           user: {},
         })
       );
-      toast.error(error.response.data.message);
+      // toast.error(error.response.data.message);
     }
   };
 };
@@ -124,6 +135,7 @@ export const logoutUser = () => {
           user: {},
         })
       );
+      localStorage.removeItem("token");
       toast.success(data.message);
     } catch (error) {
       dispatch(
@@ -151,7 +163,15 @@ export const updateUser = (userData) => {
           "Content-Type": "application/json",
         },
       };
-      const { data } = await axios.put("/api/v1/me/update", userData, config);
+      if (!localStorage.getItem("token")) {
+        throw new Error("UnAuthorised");
+      }
+      const token = localStorage.getItem("token");
+      const { data } = await axios.put(
+        "/api/v1/me/update",
+        { userData, token },
+        config
+      );
       dispatch(
         userActions.profileReducer({
           loading: false,
@@ -185,9 +205,13 @@ export const updatePassword = (passwords) => {
           "Content-Type": "application/json",
         },
       };
+      if (!localStorage.getItem("token")) {
+        throw new Error("UnAuthorised");
+      }
+      const token = localStorage.getItem("token");
       const { data } = await axios.put(
         "/api/v1/password/update",
-        passwords,
+        { token, passwords },
         config
       );
       dispatch(
@@ -219,7 +243,20 @@ export const fetchAllUsersByAdmin = () => {
           users: [],
         })
       );
-      const { data } = await axios.get("/api/v1/admin/users");
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      if (!localStorage.getItem("token")) {
+        throw new Error("UnAuthorised");
+      }
+      const token = localStorage.getItem("token");
+      const { data } = await axios.post(
+        "/api/v1/admin/users",
+        { token },
+        config
+      );
       dispatch(
         userActions.allUsersForAdmin({
           loading: false,
@@ -247,7 +284,20 @@ export const fetchUserForAdmin = (userId) => {
           user: {},
         })
       );
-      const { data } = await axios.get(`/api/v1/admin/user/${userId}`);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      if (!localStorage.getItem("token")) {
+        throw new Error("UnAuthorised");
+      }
+      const token = localStorage.getItem("token");
+      const { data } = await axios.post(
+        `/api/v1/admin/user/${userId}`,
+        { token },
+        config
+      );
       dispatch(
         userActions.getUserForAdmin({
           loading: false,
@@ -269,7 +319,20 @@ export const fetchUserForAdmin = (userId) => {
 export const deleteUserByAdmin = (userId) => {
   return async (dispatch) => {
     try {
-      await axios.delete(`/api/v1/admin/user/${userId}`);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      if (!localStorage.getItem("token")) {
+        throw new Error("UnAuthorised");
+      }
+      const token = localStorage.getItem("token");
+      await axios.post(
+        `/api/v1/admin/user/delete/${userId}`,
+        { token },
+        config
+      );
       dispatch(
         userActions.deleteUserByAdmin({
           isDeleted: true,
@@ -300,7 +363,15 @@ export const updateUserByAdmin = (userId, userData) => {
           "Content-Type": "application/json",
         },
       };
-      await axios.put(`/api/v1/admin/user/${userId}`, userData, config);
+      if (!localStorage.getItem("token")) {
+        throw new Error("UnAuthorised");
+      }
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `/api/v1/admin/user/${userId}`,
+        { userData, token },
+        config
+      );
       dispatch(
         userActions.updateUserByAdmin({
           loading: false,

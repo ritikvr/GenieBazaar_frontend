@@ -16,7 +16,15 @@ export const createOrder = (orderData) => {
           "Content-Type": "application/json",
         },
       };
-      const { data } = await axios.post("/api/v1/order/new", orderData, config);
+      if (!localStorage.getItem("token")) {
+        throw new Error("UnAuthorised");
+      }
+      const token = localStorage.getItem("token");
+      const { data } = await axios.post(
+        "/api/v1/order/new",
+        { orderData, token },
+        config
+      );
       dispatch(
         orderActions.newOrderReducer({
           loading: false,
@@ -38,7 +46,16 @@ export const fetchAllOrders = () => {
           orders: [],
         })
       );
-      const { data } = await axios.get("/api/v1/me/orders");
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      if (!localStorage.getItem("token")) {
+        throw new Error("UnAuthorised");
+      }
+      const token = localStorage.getItem("token");
+      const { data } = await axios.post("/api/v1/me/orders", { token }, config);
       dispatch(
         orderActions.fetchOrdersReducer({
           loading: false,
@@ -66,7 +83,20 @@ export const fetchOrderDetails = (orderId) => {
           orderDetail: {},
         })
       );
-      const { data } = await axios.get(`/api/v1/order/${orderId}`);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      if (!localStorage.getItem("token")) {
+        throw new Error("UnAuthorised");
+      }
+      const token = localStorage.getItem("token");
+      const { data } = await axios.post(
+        `/api/v1/order/${orderId}`,
+        { token },
+        config
+      );
       dispatch(
         orderActions.orderDetailReducer({
           loading: false,
@@ -95,7 +125,20 @@ export const fetchAdminOrders = () => {
           totalAmount: 0,
         })
       );
-      const { data } = await axios.get("/api/v1/admin/orders");
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      if (!localStorage.getItem("token")) {
+        throw new Error("UnAuthorised");
+      }
+      const token = localStorage.getItem("token");
+      const { data } = await axios.post(
+        "/api/v1/admin/orders",
+        { token },
+        config
+      );
       dispatch(
         orderActions.adminOrdersReducer({
           loading: false,
@@ -119,7 +162,16 @@ export const fetchAdminOrders = () => {
 export const adminDeleteOrder = (orderId) => {
   return async (dispatch) => {
     try {
-      await axios.delete(`/api/v1/admin/order/${orderId}`);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      if (!localStorage.getItem("token")) {
+        throw new Error("UnAuthorised");
+      }
+      const token = localStorage.getItem("token");
+      await axios.post(`/api/v1/admin/order/${orderId}`, { token }, config);
       dispatch(
         orderActions.adminOrderDeleteReducer({
           isDeleted: true,
@@ -150,7 +202,15 @@ export const adminUpdateOrder = (orderId, orderData) => {
           "Content-Type": "application/json",
         },
       };
-      await axios.put(`/api/v1/admin/order/${orderId}`, orderData, config);
+      if (!localStorage.getItem("token")) {
+        throw new Error("UnAuthorised");
+      }
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `/api/v1/admin/order/${orderId}`,
+        { orderData, token },
+        config
+      );
       dispatch(
         orderActions.adminOrderUpdateReducer({
           isUpdated: true,

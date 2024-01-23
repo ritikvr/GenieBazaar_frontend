@@ -79,7 +79,6 @@ const Products = () => {
   const [ratingValue] = useDebounce(rating, 500);
 
   useEffect(() => {
-    console.log("1");
     dispatch(
       fetchProducts(keyword, currentPage, priceValue, category, ratingValue)
     );
@@ -88,7 +87,6 @@ const Products = () => {
 
   useEffect(() => {
     setCurrentPage(1);
-    console.log("2");
     dispatch(fetchProducts(keyword, 1, priceValue, category, ratingValue));
     // eslint-disable-next-line
   }, [priceValue, category, ratingValue, keyword]);

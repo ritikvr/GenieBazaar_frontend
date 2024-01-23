@@ -102,7 +102,15 @@ export const createProductReview = (reviewData) => {
           "Content-Type": "application/json",
         },
       };
-      const { data } = await axios.put("/api/v1/review", reviewData, config);
+      if (!localStorage.getItem("token")) {
+        throw new Error("UnAuthorised");
+      }
+      const token = localStorage.getItem("token");
+      const { data } = await axios.put(
+        "/api/v1/review",
+        { reviewData, token },
+        config
+      );
       dispatch(
         productActions.productReviewReducer({
           success: data.success,
@@ -129,7 +137,20 @@ export const fetchAdminProducts = () => {
           products: [],
         })
       );
-      const { data } = await axios.get("/api/v1/admin/products");
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      if (!localStorage.getItem("token")) {
+        throw new Error("UnAuthorised");
+      }
+      const token = localStorage.getItem("token");
+      const { data } = await axios.post(
+        "/api/v1/admin/products",
+        { token },
+        config
+      );
       dispatch(
         productActions.adminProductsReducer({
           loading: false,
@@ -143,7 +164,7 @@ export const fetchAdminProducts = () => {
           products: [],
         })
       );
-      toast.error(error.response.data.message);
+      // toast.error(error.response.data.message);
     }
   };
 };
@@ -163,9 +184,13 @@ export const createNewProduct = (productData) => {
           "Content-Type": "application/json",
         },
       };
+      if (!localStorage.getItem("token")) {
+        throw new Error("UnAuthorised");
+      }
+      const token = localStorage.getItem("token");
       const { data } = await axios.post(
         "/api/v1/admin/product/new",
-        productData,
+        { productData, token },
         config
       );
       dispatch(
@@ -191,7 +216,16 @@ export const createNewProduct = (productData) => {
 export const deleteProduct = (productId) => {
   return async (dispatch) => {
     try {
-      await axios.delete(`/api/v1/admin/product/${productId}`);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      if (!localStorage.getItem("token")) {
+        throw new Error("UnAuthorised");
+      }
+      const token = localStorage.getItem("token");
+      await axios.post(`/api/v1/admin/product/${productId}`, { token }, config);
       dispatch(
         productActions.deleteProductReducer({
           isDeleted: true,
@@ -222,9 +256,13 @@ export const updateProduct = (productData, productId) => {
           "Content-Type": "application/json",
         },
       };
+      if (!localStorage.getItem("token")) {
+        throw new Error("UnAuthorised");
+      }
+      const token = localStorage.getItem("token");
       await axios.put(
         `/api/v1/admin/product/${productId}`,
-        productData,
+        { productData, token },
         config
       );
       dispatch(
@@ -276,8 +314,19 @@ export const fetchAllReviewsForAdmin = (productId) => {
 export const deleteReviewByAdmin = (productId, reviewId) => {
   return async (dispatch) => {
     try {
-      await axios.delete(
-        `/api/v1/reviews/?productId=${productId}&reviewId=${reviewId}`
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      if (!localStorage.getItem("token")) {
+        throw new Error("UnAuthorised");
+      }
+      const token = localStorage.getItem("token");
+      await axios.post(
+        `/api/v1/reviews/?productId=${productId}&reviewId=${reviewId}`,
+        { token },
+        config
       );
       dispatch(
         productActions.deleteReviewAdminReducer({

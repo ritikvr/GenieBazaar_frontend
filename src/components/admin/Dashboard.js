@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAdminProducts } from "../../store/product-actions";
 import { fetchAdminOrders } from "../../store/order-actions";
 import { fetchAllUsersByAdmin } from "../../store/user-actions";
+import MetaData from "../layout/MetaData";
 
 ChartJS.register(
   CategoryScale,
@@ -90,6 +91,7 @@ const Dashboard = () => {
   return (
     <Fragment>
       <div className="dashboard">
+        <MetaData title="Dashboard" />
         <Sidebar />
         <div className="dashboard-container">
           <Typography component="h1">Dashboard</Typography>
