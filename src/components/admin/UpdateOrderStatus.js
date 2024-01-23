@@ -47,7 +47,7 @@ const UpdateOrderStatus = () => {
 
   return (
     <Fragment>
-      <MetaData title="update product status" />
+      <MetaData title="update order status" />
       <div className="dashboard">
         <Sidebar />
         {loading ? (
